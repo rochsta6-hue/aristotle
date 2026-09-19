@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pure CSS Video Switcher</title>
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+  <div class="video-container">
+
+    <!-- DEFAULT VIDEO (Plays when NO text is hovered) -->
+    <video class="bg-video video-default" autoplay loop muted playsinline>
+      <source src="vid1.mp4" type="video/mp4">
+    </video>
+
+    <!-- HOVER VIDEOS -->
+    <video class="bg-video video-fire" autoplay loop muted playsinline>
+      <source src="vid2.mp4" type="video/mp4">
+    </video>
+
+    <video class="bg-video video-around" autoplay loop muted playsinline>
+      <source src="vid3.mp4" type="video/mp4">
+    </video>
+
+    <video class="bg-video video-phil" autoplay loop muted playsinline>
+      <source src="vid4.mp4" type="video/mp4">
+    </video>
+
+    <div class="video-overlay"></div>
+
+    <!-- JUSTIFIED INSTRUCTION TEXTS -->
+    <p class="instruction-text text-left">
+      Hold the spacebar<br>
+      to fill the box with<br>
+      fire and explode to<br>
+      the next page
+    </p>
+
+    <p class="instruction-text text-right">
+      Hover your cursor<br>
+      to bring fire to the<br>
+      text and generate<br>
+      the videos.
+    </p>
+
+    <!-- TEXT LINKS -->
+    <main class="content-container">
+      <nav class="video-links">
+        <span class="text-the">the</span>
+        <a href="#" class="link-fire">Fire</a>
+        <a href="#" class="link-around">Around</a>
+        <a href="#" class="link-phil">Philippines</a>
+      </nav>
+    </main>
+
+  </div>
+
+  <!-- FIRE SPACEBAR KEY -->
+  <div class="spacebar-wrapper">
+    <div id="spacebar-key" class="spacebar-key">
+      <div id="fire-fill"></div>
+      <span class="spacebar-label">HOLD SPACEBAR</span>
+    </div>
+  </div>
+
+  <!-- CANVAS FOR CURSOR, TEXT FIRE & BURNING PAPER EFFECT -->
+  <canvas id="fire-canvas"></canvas>
+
+  <script src="home.js"></script>
+</body>
+</html>

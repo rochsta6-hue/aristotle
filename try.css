@@ -1,0 +1,173 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #000;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* Background Video */
+.bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Sidebar Wrapper */
+.sidebar-container {
+  height: 100vh;
+  display: flex;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+/* Vertical Icon Toolbar */
+.toolbar {
+  width: 60px;
+  height: 100%;
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  gap: 15px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.tool-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #bdc3c7;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.tool-btn.active {
+  background: #e74c3c;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(231, 76, 60, 0.6);
+}
+
+/* Sliding Side Panel Drawer */
+.side-panel {
+  width: 0;
+  height: 100%;
+  background: rgba(15, 15, 20, 0.92);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  position: relative;
+  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.side-panel.open {
+  width: 300px;
+}
+
+/* Fixed Width Content Inner Wrapper */
+.panel-inner {
+  width: 300px;
+  padding: 40px 20px 20px 20px;
+  box-sizing: border-box;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.panel-content {
+  display: none;
+}
+
+.panel-content.active {
+  display: block;
+}
+
+.panel-content h2 {
+  font-size: 1.2rem;
+  margin-top: 0;
+  color: #e74c3c;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-content p {
+  color: #dcdde1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Map Wrapper */
+.map-wrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+svg {
+  width: 100%;
+  max-width: 750px;
+  height: auto;
+  display: block;
+}
+
+.region {
+  fill: #7f8c8d;
+  stroke: #ffffff;
+  stroke-width: 1;
+  transition: fill 0.3s ease, opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.region:hover {
+  fill: #bdc3c7;
+  stroke: #ffffff;
+}
+
+/* Fire Cursor Overlay Canvas */
+#fireCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* Allows clicking underlying map and buttons */
+  z-index: 9999;
+}
