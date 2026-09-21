@@ -1,78 +1,428 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>SVG Path Hover Popup</title>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="try.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG Path Hover Popup & Fire Risk Dashboard</title>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Embedded Consolidated CSS Styles -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-color: #0b0f19;
+      color: #ffffff;
+      font-family: 'Inter', Arial, sans-serif;
+      display: flex;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* Background Video / Ambient Canvas Styling */
+    .bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.45;
+      filter: brightness(0.6) contrast(1.2);
+    }
+
+    /* Fallback animated background if video source is unavailable */
+    .bg-fallback {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at 50% 50%, #1a233a 0%, #080c14 100%);
+      z-index: -2;
+    }
+
+    /* Sidebar Container */
+    .sidebar-container {
+      height: 100vh;
+      display: flex;
+      z-index: 100;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* Vertical Icon Toolbar */
+    .toolbar {
+      width: 60px;
+      height: 100%;
+      background: rgba(20, 20, 20, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      gap: 15px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tool-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #bdc3c7;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .tool-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .tool-btn.active {
+      background: #e74c3c;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(231, 76, 60, 0.6);
+    }
+
+    /* Tooltip text for toolbar buttons */
+    .tool-btn::after {
+      content: attr(title);
+      position: absolute;
+      left: 60px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(-5px);
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .tool-btn:hover::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Sliding Side Panel Drawer */
+    .side-panel {
+      width: 0;
+      height: 100%;
+      background: rgba(15, 15, 20, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+      position: relative;
+      transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .side-panel.open {
+      width: 320px;
+    }
+
+    /* Fixed Width Content Inner Wrapper */
+    .panel-inner {
+      width: 320px;
+      padding: 40px 24px 20px 24px;
+      box-sizing: border-box;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.2s ease;
+    }
+
+    .close-btn:hover {
+      color: #fff;
+    }
+
+    .panel-content {
+      display: none;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .panel-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-content h2 {
+      font-size: 1.25rem;
+      margin-top: 0;
+      margin-bottom: 16px;
+      color: #e74c3c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(231, 76, 60, 0.3);
+      padding-bottom: 10px;
+    }
+
+    .panel-content p {
+      color: #dcdde1;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .panel-stats {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    .stat-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .stat-value {
+      font-weight: bold;
+      color: #e74c3c;
+    }
+
+    /* Map Wrapper */
+    .map-wrapper {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    svg {
+      width: 100%;
+      max-width: 850px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.6));
+      transition: transform 0.3s ease;
+    }
+
+    /* Base Region Colors */
+    .region {
+      fill: #7f8c8d;
+      stroke: #ffffff;
+      stroke-width: 1.5;
+      transition: fill 0.4s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease, opacity 0.3s ease;
+      cursor: pointer;
+    }
+
+    /* DEFAULT HOVER STATE (When Fire Risk Mode is INACTIVE) */
+    .region:hover {
+      fill: #bdc3c7;
+      stroke: #ffffff;
+      filter: brightness(1.1);
+    }
+
+    /* FIRE RISK PROFILE ACTIVE STATE COLOR OVERRIDE
+       When SVG has class .fire-risk-active, base region fill becomes red risk color */
+    svg.fire-risk-active .region {
+      fill: #e74c3c;
+    }
+
+    /* FIRE RISK PROFILE HOVER STATE
+       Lighter shade of the fire risk profile color when hovering in Fire Risk Mode */
+    svg.fire-risk-active .region:hover {
+      fill: #ff7675 !important;
+      stroke: #ffffff;
+      filter: brightness(1.15);
+    }
+
+    /* Specific region highlight state when clicked directly */
+    .region.selected {
+      stroke: #f1c40f;
+      stroke-width: 2.5;
+    }
+
+    /* Map Tooltip Box */
+    .map-tooltip {
+      position: absolute;
+      background: rgba(10, 14, 23, 0.9);
+      border: 1px solid rgba(231, 76, 60, 0.6);
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.1s ease;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Fire Cursor Overlay Canvas */
+    #fireCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none; /* Allows clicking underlying map and buttons */
+      z-index: 9999;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Fullscreen Background Video -->
-    <video class="bg-video" autoplay loop muted playsinline>
-        <source src="map-bg.mp4" type="video/mp4">
-    </video>
+  <!-- Ambient Fallback Background -->
+  <div class="bg-fallback"></div>
 
-    <!-- Sidebar Container -->
-    <div class="sidebar-container">
+  <!-- Fullscreen Background Video -->
+  <video class="bg-video" autoplay loop muted playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%230b0f19'/></svg>">
+    <source src="map-bg.mp4" type="video/mp4">
+  </video>
 
-        <!-- Vertical Toolbar Buttons -->
-        <nav class="toolbar">
-            <button class="tool-btn" data-panel="panel-fire" title="Fire Risk Profile">
-                <i class="fa-solid fa-fire-flame-curved"></i>
-            </button>
-            <button class="tool-btn" data-panel="panel-causes" title="Main Causes">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-            <button class="tool-btn" data-panel="panel-incidents" title="Prominent Incidents">
-                <i class="fa-solid fa-bell"></i>
-            </button>
-            <button class="tool-btn" data-panel="panel-goals" title="Goals">
-                <i class="fa-solid fa-circle-info"></i>
-            </button>
-        </nav>
+  <!-- Sidebar Container -->
+  <div class="sidebar-container">
+    
+    <!-- Vertical Toolbar Buttons -->
+    <nav class="toolbar">
+      <button class="tool-btn" data-panel="panel-fire" title="Fire Risk Profile">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+      </button>
+      <button class="tool-btn" data-panel="panel-causes" title="Main Causes">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+      <button class="tool-btn" data-panel="panel-incidents" title="Prominent Incidents">
+        <i class="fa-solid fa-bell"></i>
+      </button>
+      <button class="tool-btn" data-panel="panel-goals" title="Goals">
+        <i class="fa-solid fa-circle-info"></i>
+      </button>
+    </nav>
 
-        <!-- Sliding Info Drawer Box -->
-        <div class="side-panel" id="sidePanel">
-            <button class="close-btn" id="closeBtn">&times;</button>
-
-            <div class="panel-inner">
-                <!-- Panel 1 Content -->
-                <div class="panel-content" id="panel-fire">
-                    <h2><i class="fa-solid fa-fire-flame-curved"></i> Fire Risk Profile</h2>
-                    <p>Information regarding regional fire risk assessments and statistics.</p>
-                </div>
-
-                <!-- Panel 2 Content -->
-                <div class="panel-content" id="panel-causes">
-                    <h2><i class="fa-solid fa-magnifying-glass"></i> Main Causes</h2>
-                    <p>Breakdown of key causes leading to fire incidents in identified zones.</p>
-                </div>
-
-                <!-- Panel 3 Content -->
-                <div class="panel-content" id="panel-incidents">
-                    <h2><i class="fa-solid fa-bell"></i> Prominent Incidents</h2>
-                    <p>Recent alerts, high-level warnings, and notable historical incidents.</p>
-                </div>
-
-                <!-- Panel 4 Content -->
-                <div class="panel-content" id="panel-goals">
-                    <h2><i class="fa-solid fa-circle-info"></i> Goals</h2>
-                    <p>Prevention goals, response objectives, and safety initiatives.</p>
-                </div>
+    <!-- Sliding Info Drawer Box -->
+    <div class="side-panel" id="sidePanel">
+      <button class="close-btn" id="closeBtn" title="Close Panel">&times;</button>
+      
+      <div class="panel-inner">
+        <!-- Panel 1 Content -->
+        <div class="panel-content" id="panel-fire">
+          <h2><i class="fa-solid fa-fire-flame-curved"></i> Fire Risk Profile</h2>
+          <p>Information regarding regional fire risk assessments, vegetation dryness indices, and live threat level maps.</p>
+          <div class="panel-stats">
+            <div class="stat-item">
+              <span>Overall Threat Level:</span>
+              <span class="stat-value">High / Critical</span>
             </div>
+            <div class="stat-item">
+              <span>Active Zones:</span>
+              <span class="stat-value">14 Sectors</span>
+            </div>
+            <div class="stat-item">
+              <span>Avg Humidity:</span>
+              <span class="stat-value">22%</span>
+            </div>
+          </div>
         </div>
 
+        <!-- Panel 2 Content -->
+        <div class="panel-content" id="panel-causes">
+          <h2><i class="fa-solid fa-magnifying-glass"></i> Main Causes</h2>
+          <p>Breakdown of key causes leading to fire incidents in identified risk zones, including lightning strikes and agricultural burn-offs.</p>
+          <div class="panel-stats">
+            <div class="stat-item">
+              <span>Unattended Debris:</span>
+              <span class="stat-value">42%</span>
+            </div>
+            <div class="stat-item">
+              <span>Equipment Sparks:</span>
+              <span class="stat-value">28%</span>
+            </div>
+            <div class="stat-item">
+              <span>Lightning:</span>
+              <span class="stat-value">18%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3 Content -->
+        <div class="panel-content" id="panel-incidents">
+          <h2><i class="fa-solid fa-bell"></i> Prominent Incidents</h2>
+          <p>Recent alerts, high-level warnings, and notable historical fire incidents recorded across all monitored sectors.</p>
+          <div class="panel-stats">
+            <div class="stat-item">
+              <span>Northern Sector:</span>
+              <span class="stat-value">Containment 85%</span>
+            </div>
+            <div class="stat-item">
+              <span>Eastern Ridge:</span>
+              <span class="stat-value">Alert Level 3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 4 Content -->
+        <div class="panel-content" id="panel-goals">
+          <h2><i class="fa-solid fa-circle-info"></i> Goals</h2>
+          <p>Prevention goals, rapid response objectives, and safety initiatives planned for the upcoming high-dryness season.</p>
+          <div class="panel-stats">
+            <div class="stat-item">
+              <span>Target Response Time:</span>
+              <span class="stat-value">&lt; 12 Mins</span>
+            </div>
+            <div class="stat-item">
+              <span>Community Awareness:</span>
+              <span class="stat-value">94% Target</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 	
-<!-- Shared parent container -->
+  <!-- Shared parent container for SVG Map -->
   <div class="map-wrapper">
-	  
-    <!-- Your SVG Map -->
-    <svg viewBox="0 0 1000 1000">
-      <svg baseprofile="tiny" stroke-linecap="round" stroke-linejoin="round" version="1.2" viewbox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" valign="center">
- <g id="features">
+    <!-- SVG Regional Map -->
+    <svg viewBox="0 0 1000 700" id="svgMap">
+      <g id="features">
   <path class="region" d="M713.9 833.9l-0.4-0.2-0.8-1-0.4-1.1-0.4-2.3-0.7-1.4-0.2-0.5-0.2-2-0.3-0.2-0.5-0.1-1-0.4-0.4-0.1-0.2-0.2-0.1-0.6 0.1-0.6 0.2-0.6 0.3-0.5 0.3-0.2 0.4-0.6 0.3-2.7 0.3-0.8 0.5-0.2 0.4 0.2 0.3 0.3 0.2 0.5 0.9 0.8 0.9 0.7 0.8 0.8 0.3 1.2-0.3 6.9 0.1 1.2 0.4 0.8 0.1 0.5-0.2 0.5-0.3 0.7-0.4 1.2z m-25.2 70.7l0.3-0.2 1.9-1 0.8-0.6 0.1 0 0.7-0.9 4.6-10.6 0.2-0.2 0.4 0 0.3-0.1 0-0.4-0.1-0.5-0.1-2.8 0.1-0.5 1.7-5.2 0-1 0.3-0.2 0.2-0.3 0.2-0.3 0.1-0.4 0.3-1.5 0-0.7-0.2-0.5-0.3-0.4-0.4-0.5-0.4-0.6 0-0.4 0-0.6-0.1-1.1 0-0.6 0.1-0.7 0.3-0.7 0-0.6-1.2-1.9-1.3-2.5-1-0.9-0.5-0.1-0.6 0-0.5 0.1-1 0.5-0.4-0.3-0.5-0.3-1.2 0.1-2.5-0.4-1.4 0.2-0.5-0.1-0.7-0.2-0.8-0.5-1.8-1.8-0.7-0.5-1.3-0.7-0.5-0.3 0-1.1 0-0.3-0.3-0.2-0.5-0.2-0.4-0.1-0.2-0.1-0.1-0.2 0-0.4 0.2-0.4 0.4-0.3 0.4-0.5 0.3-1.3 0.2-2.8 0.5-1.2 0.9-5.4-0.1-0.8-0.4-0.9-1.3-1.5-0.3-0.7-0.3-2.5 0.9-3.4 5.5-6 0-2.5 0.2-0.2 0.3-0.2 1.3-0.4 0.3-0.2 0.1 0 0.3-0.4-0.1-0.2-0.2-0.2-0.2-0.7-0.2-3.1-0.3-0.9-0.7-0.7-1.9-1.1-0.7-0.7-0.7-0.8 0.1-0.3 0.6-1.4 0.6-0.9 0.2-0.4 0.1-1-0.4-2.4-0.1-1.9-0.3-1.4 0-0.8 0.4-2.8 1.7-5.7 0.1-0.7-0.2-0.6-0.5-0.6 0.1-0.5 0.4 0 0.4-0.2 0.2-0.3 0.2-0.4 0.2-1.2 0.4-1 0.3-1-0.1-1.3 0.7 0.3 0.5-0.1 0.6-0.1 0.6 0 0.6 0.1 1.5 0.4 0.7 0.1 1.1-0.8 0.7-1.5 0.4-1.7 0.1-2.1 0-0.7-0.2-0.7-0.7-1.8-0.2-0.8-0.3-1.8-0.4-1.6-1.9-4.4 0-0.1 16.1 0.1 27.2 0.1 5.8 0 0.5 1.5 0.7 1.5 1.2 1.1 1.5 0.7 1.1 0.4-0.1 0.7 0.5 1.5 0.8 1.4 1 0.9 1.6 1 0.2 0.3 0.2 0.6 1.3 1.8 1.3 0.8 2.7 0.3 1.2 0.4-0.4 1.2-0.2 1.2-0.2 2.6 0.3 1.3 1 2.7 0.4 2.5 0.4 1.2 0 1.1-0.6 1.1-0.6 0.4-0.6 0.2-0.4 0.4-0.2 0.8 0.2 0.2 1.2 0.9-0.4 1.3-0.1 2.5-0.6 1 0.5 0.3 1.7 1 0.4 0-0.3 1.1-1.3 1.6-0.2 1-0.2 0.4-0.4 0.2-0.5 0.1-0.4 0.2-0.3 0.5-1.1 2.9-0.3 0.6-1.8 1.6-0.8 1.2-0.4 1.5-0.1 1.9-0.8 1.1-1.8 0.2-2.1-0.4-1.6-0.7-1.3 1.2-0.8 1.6-0.3 1.6-0.1 1.4 0.3 0.6 1.4 1.2 0.5 0.5 0.2 0.9 0.1 1.1-0.1 1-0.4 0.4-1.6-0.6-1-1.5-1.2-3.5-1.4-1.5-1.6-0.8-1.1 0.4 0 2.3-0.3 0-0.2-0.3-0.6-0.8-0.2 1.1 0.6 1.2 0.7 1.1 0.8 1.9 1 0.9 1 0.7 0.6 0.5 0.1 1.2-0.7 2.2-0.8 4.7-0.1 8-0.9 4.2-0.2 4.9-0.4 0.9-0.7-0.2-0.2-0.8-0.3-2.7-0.1-0.6-1.8-1.3-0.2-0.5-0.1-0.6 0.1-0.7 0-0.6-1.3-2.5-0.7-0.9-0.3-1.1-0.7-6.7 0.1-1.3 0.7-3.4-0.1-1.1-0.5-2-0.2-1.1 0-1.5-0.2-0.6-0.6-0.3-1.4-0.4-1-0.6-2.1-2.9-0.3-1 0.4-2.5 0.1-1.1-0.6-1.2-1.1-1.1-2.2-2-0.6-0.9-0.3-0.8-0.3-2.2-2.2-5.2 0-2.2 0.1-1.2 0-1.1-0.4-0.7-0.8-0.2-0.3-0.1-0.9 0.2-3.3 2.4-3.1 1.8-0.6 0.5-0.5 0.4-0.6 1.1-0.1 1.2 0.2 3.5 0 1.1-0.2 0.5-0.5 0.7-0.1 0.5-0.2 0.5-2 1.9-1.5 0.8-1.8 0.4-1.7 0.9-1.2 1.9-0.1 2.4-0.2 1.2-0.6 0.5-2.4 2.9-1.2 2.1-0.8 2.3-0.4 2.5-0.2 2.6 0.2 0.9 0.7 2.1 0.2 1.1 0.4 0.5 0.9 0.4 0.7-0.4-0.1-1.5 1.7 1.2 2.3 3 1.4 1.4 1.1-0.6 1 0.4 0.9 0.9 0.4 1 0 2.1 0.2 0.8 1.6 3.3 0.6 0.8 0.2 0.4 0 0.6-0.1 1.2 0.1 0.6 0.2 0.4 0.5 0.7 2.6 7 0.2 0.9 0 1.2-0.2 1.1-0.6 1-0.2 0.6 0.4 1.1-0.2 0.5-0.2 0.5-0.4 1.6-0.9 2.2-3.9 4.8-5.2 7.3-3.3 5.9-0.8 1-1 0.9-0.8 0.4-0.9 0.1-2.6-0.2-0.8-0.2-0.1-0.2z m6 11.6l-0.3 0-0.7-0.2-1 0.1-0.9 0.2-0.7-0.3-0.4-0.5-0.5-0.3 0-0.3 0.4-0.4 0.9-1.2 1-0.5 1.5 0 0.7 0.3 0.2 0.3 0.2 0.7-0.1 1.6-0.3 0.5z" id="davao" name="Davao">
   </path>
   <path class="region" d="M746.5 779.6l-1.1-0.4-1.5-0.7-1.2-1.1-0.7-1.5-0.5-1.5-5.8 0-27.2-0.1-16.1-0.1-0.5-1.5-0.3-5.3-0.4-1.2-1.3-2.3-0.2-1.3 0.1-1.1 0.2-0.9 0.1-0.9-0.3-1.1-0.7-2-0.1-1.9 0.1-1.9-0.5-2.6 0.9-8-0.2-4.7-1.3-3.4-0.1-2.4 1.7-5.6-2.5-3.2-2.3-2.3-0.2-1.2-0.4-0.5-0.4-0.3-0.4-0.4-0.1-0.6 0-1.3 0-0.6-0.1-0.2 0.3-0.3 0.5-0.1 0.5 0.5 0.6 1.3 1.6 2.2 1.1 0.8 1.2 0.3 3.5 0.2 2.3 0.5 1.1 0.1 1.2-0.3 2.9-1.6 0.5-0.6 0.4-1.2 0.4-1.9 0-5.8-0.1-0.9-0.3-0.6-0.4-0.5-0.3-0.7 0-0.5 0.1-0.9-0.1-0.5-0.1-0.5-0.5-1.1-0.3-1.4-1.1-1.7-0.3-1.6-0.3-0.4-0.2-0.3-0.1-0.3 0-1.6-0.1-0.3-0.1-0.8-1.2-3.1-0.1-0.5-0.2-1.1-1.9-7.4-0.1-1 0.2-1 0.3-0.8 2.6-4.4 0.2-0.5 0.7 0.8 0.9 0.8 1 0.7 1.8 0.5 1.5 0.8 1.1 0.1-0.3 1.3 0.5 1.6 0.6 1.5 0.3 1.4 0.5 1 1.3 1 1.5 0.6 1.1-0.2-0.1 0.2 0 0.2-0.1 0.2-0.2 0.2 0.7 0 0.4 0.2 0.4 0.5 0.5 0.1 1.2-0.1 0.5 0 1 1.2 0.5 0.3 0.5 0.2 3.1 0.4 1 0.6 1.8 1.6 0.5 0.2 0.7 0 0.6 0.1 0.2 0.4 0.1 0.5 0.5 0.7 0.2 0.5 0.5-1 0.2-0.5 0.3 0 0 0.9 0 0.6-0.2 0.3-0.5 0.5-0.6 0.2-1.5 0.4-0.4 0.5-0.1 0.7 0.3 0.5 0.6 0.4 0.6 0.2 0.9 0.2 0.6-0.2 1.5-0.7-0.1 2.2 0.2 1.8 0.8 1.7 2.5 2.6 0.4 0.2 0.6 0.1 0.7-0.1 1.1-0.5 1.8-0.6 1.9-1.9 1.1-0.6 1.1 0.1 0.2 0.8-0.2 1-1.1 1.8-0.3 1.3-0.4 2.4 0 1.8-0.4 2.5 0.2 0.6 0.6 0.2 0.7 0.1 0.5 0.2 0.4 0.4 0.5 1.4 0.4 0.6 3.9 3.9 0.5 1.1 0.1 0.7 0.6 2.1-0.2 0.8 0 0.5 0.7 0.4-0.1 0.4-0.3 0.4-0.1 0.1-0.4 1.3-0.6 1.3-0.9 1.1-1.2 0.4-2 1.4-0.3 0.1 0 0.8 0.4 0.4 1 0.7 0 0.3-0.2 0.1 0 0.1-0.1 0.2-0.7-0.3-0.6-0.1-1.1 0-0.7 0.2-1.3 1.1-1.9 0.8-1 1.3-0.5 1.2 1.1 1.2 0.9 2.4 0.6 0.7 0.5 0.1 1.7-0.1 1.1 0.4 0.5 0 0.6-0.4-1.1-0.7-0.3-0.4 0.3-0.4 0.6 0.1 0.7 0.3 0.7 0.1 0.6-0.5 1.2 0.6 3.5 0.6 0-0.1 0.2-0.2 0.2-0.1 0.3 0 0 0.1 0.2 0.5 0.4 0.7 1.1 0.8 0.2 0.5-0.4 0.8 0.3 0.1 0.2 0.3 0.3 0.3-1.5-0.1-0.5 0.2-0.3 0.4-0.1 1.3 0.1 0.3 0.8-0.3 0.2 0.9-0.4 1.1-1.3 1.7-0.2 0.1-0.6 0.4-0.5 0.4 0.4 0.2 0.2 0.3 0.7 1.4 0.5 0.4 0.8 0.2 0.4 0.5-0.6 1.3-1.7 2-0.3 0.9 0.4 1 0.8 0.5 0.8-0.2 0.9-0.5 1.6-0.6 1.9-1.6 0.2 0.6-0.3 4.6-0.2 0.8 0.1 0.8 0.6 1.1-1.3 0.7-0.6 2 0.2 2.1 1 1.4-1 1-2.1 1.5-0.6 1.2 0 0.7z m-20.7-95.3l-1 2.1 0.3 0.6 0 0.9-0.3 0.8-0.5 0.3-0.9 0.2-0.3 0 0.3-0.9-0.4-0.3-0.6-0.1-0.5 0 0-0.4 0.5 0 0.2 0 0-0.4-1.1-0.7 0 0.4-0.1-0.5 0-0.6 0.5-1.2 0.2-0.3 0.2-0.2 0.2-0.1 0.1-0.5 0-0.5 0-0.6 0-0.4-0.5-0.8-0.1-1.3 0.4-1.2 1-0.4 0.3 0.3 0.1 0.3-0.1 0.5 0.5-0.2 0.2-0.2 0.1 0.9 0 1.3 0.1 1.1 0.8 0.5 0.6 0.4-0.2 1.2z m9.8-7.9l-0.1 0.7-1.3 0.5-0.9 0.7-0.4 0.3-0.6 0.1-1.4-0.1-2.1-0.8-0.7 0 0.4 1.1-0.8-0.6-0.8-0.9-1.3-1.8 0-0.3 0.1-0.2 0-0.3-0.1-0.3-0.3-0.2-0.5 0-0.4-0.1-0.3-0.5 0.7 0.1 0.7-0.1 0.7-0.2 0.5-0.6-0.6-0.2-0.8-0.5-0.5-0.5 0.2-0.8 3.3-5.3 0.2-0.5 0-0.5-0.1-0.5-0.1-0.5 0.4-0.5 1-0.8 0.5 0.2 2.5 5.5 0.6 2.9 0 0.6-0.3 0.6-0.8 0.7-0.4 0.5 1.1 0.2 0.7 0.2 0.5 0.5 0.7 0.7 0.4 0.6 0.4 0.9z m-25-4.4l-0.8 0.4-1.1-0.2-0.8-0.6-0.2-0.8 0.1-0.9-0.2-1-0.5-0.5-1.5-0.4-0.6-0.6 0.5 0 0.2 0-0.4-0.3-0.2-0.3 0-0.3 0.3-0.3 0-0.3-1.3 0-0.5-0.9 0.1-1.3 0.6-1.2 0.2 0.5 0.4 0.2 0.3-0.2 0.2-0.7-0.2-0.2-0.7-0.9-0.2-0.5-0.4 0-0.3 0.6-0.3 0.1-0.5-0.2-0.5-0.2-0.4 0.3-0.4 0.5-0.5 0.4-0.8 0-0.4-0.6 0-0.8-0.1-0.6-0.8-0.3-0.1-0.3 0.1-1.4-0.1-0.5 0.8-0.4 0.4-1 0.1-1.1-0.2-0.9 0.4-0.2 0.4 0 0.3 0.2 0.3 0.4-0.1-0.9-0.4-0.7-0.1-0.7 0.6-0.7-0.2-0.1-0.1-0.2-0.1-0.2-0.3-0.3 0.2-0.8-0.4-1-0.1-0.8 1.2-0.3 0.7-0.1 0.2-0.4 0-1.2-0.1-0.4-0.2-0.3 0-0.2 0.3-0.5 0.3-0.1 0.4 0 0.3 0.1 0.3 0.6 0.5 0.2 0.4-0.1 0.4-0.2 0.3-0.6 0.1-2.1 0.4-1.3 0.2-0.6 0.5-0.3 0.6-0.1 0.4 0.3 0.8 1.3 0.7 1.8 0 1.9-1.1 3.7-0.1 1.4-0.2 0.5-0.2-0.1-0.5-0.1-0.4 0.2 0 0.7 0.4 0.5 0.8 0.6 0.4 0.8-0.5 0.8 0.3 0.4-0.6 0.3 0.2 0.6 0.6 0.3 0.9-0.1-0.4 1.5 0 0.9 0.3 0.8 0.8 1 0.4 0.7 0.1 0.7-0.2 0.7-0.4 0.8-0.4 0.8-0.3 0.3 0.1 0.4 0.4 2.2-0.6 0.8 0.5 0.9 0.9 0.9 0.7 0.8 0.1 0.9-0.4 0.7z" id="caraga" name="Caraga">
@@ -109,13 +459,11 @@
   </path>
  </g>
     </svg>
-
+    <div class="map-tooltip" id="mapTooltip">Sector Name</div>
   </div>
 
-<!-- Fire Cursor Canvas Layer -->
+  <!-- Fire Cursor Canvas Layer -->
   <canvas id="fireCanvas"></canvas>
-
-  <script src="try.js"></script>
 
 </body>
 </html>
