@@ -6,11 +6,11 @@ body {
   color: #ffffff;
   font-family: 'Inter', Arial, sans-serif;
   display: flex;
-  overflow-x: hidden;
+  overflow: hidden;
   user-select: none;
 }
 
-/* Background Video / Ambient Canvas Styling */
+/* Background Video & Fallback */
 .bg-video {
   position: fixed;
   top: 0;
@@ -24,7 +24,6 @@ body {
   filter: brightness(0.6) contrast(1.2);
 }
 
-/* Fallback animated background if video source is unavailable */
 .bg-fallback {
   position: fixed;
   top: 0;
@@ -58,6 +57,7 @@ body {
   gap: 15px;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 10;
 }
 
 .tool-btn {
@@ -104,7 +104,8 @@ body {
   transform: translateX(-5px);
   transition: all 0.2s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 20;
 }
 
 .tool-btn:hover::after {
@@ -130,7 +131,6 @@ body {
   width: 320px;
 }
 
-/* Fixed Width Content Inner Wrapper */
 .panel-inner {
   width: 320px;
   padding: 40px 24px 20px 24px;
@@ -212,7 +212,7 @@ body {
   color: #e74c3c;
 }
 
-/* Map Wrapper */
+/* Map Wrapper Container */
 .map-wrapper {
   flex-grow: 1;
   display: flex;
@@ -222,51 +222,46 @@ body {
   min-height: 100vh;
   box-sizing: border-box;
   position: relative;
+  overflow: hidden;
 }
 
 svg {
   width: 100%;
-  max-width: 850px;
-  height: auto;
+  height: 100%;
+  max-width: 100%;
+  max-height: 90vh;
   display: block;
   filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.6));
-  transition: transform 0.3s ease;
+  transition: transform 0.1s ease-out;
+  cursor: grab;
 }
 
-/* Base Region Colors */
+svg:active {
+  cursor: grabbing;
+}
+
+/* Regional Risk Level Colors */
 .region {
-  fill: #7f8c8d;
   stroke: #ffffff;
   stroke-width: 1.5;
   transition: fill 0.4s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease, opacity 0.3s ease;
   cursor: pointer;
 }
 
-/* DEFAULT HOVER STATE (When Fire Risk Mode is INACTIVE) */
+/* Base Default Colors assigned per Region Risk Rearrangement */
+.region-red { fill: #e74c3c; }      /* High Risk / Frequent */
+.region-orange { fill: #e67e22; }   /* Moderate Risk */
+.region-yellow { fill: #f1c40f; }   /* Low Risk */
+
 .region:hover {
-  fill: #bdc3c7;
   stroke: #ffffff;
-  filter: brightness(1.1);
+  filter: brightness(1.2);
 }
 
-/* FIRE RISK PROFILE ACTIVE STATE COLOR OVERRIDE
-   When SVG has class .fire-risk-active, base region fill becomes red risk color */
-svg.fire-risk-active .region {
-  fill: #e74c3c;
-}
-
-/* FIRE RISK PROFILE HOVER STATE
-   Lighter shade of the fire risk profile color when hovering in Fire Risk Mode */
-svg.fire-risk-active .region:hover {
-  fill: #ff7675 !important;
-  stroke: #ffffff;
-  filter: brightness(1.15);
-}
-
-/* Specific region highlight state when clicked directly */
+/* Regional Highlighting on Click */
 .region.selected {
   stroke: #f1c40f;
-  stroke-width: 2.5;
+  stroke-width: 3;
 }
 
 /* Map Tooltip Box */
@@ -292,6 +287,6 @@ svg.fire-risk-active .region:hover {
   left: 0;
   width: 100vw;
   height: 100vh;
-  pointer-events: none; /* Allows clicking underlying map and buttons */
+  pointer-events: none;
   z-index: 9999;
 }
