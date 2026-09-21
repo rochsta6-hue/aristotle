@@ -1,70 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SVG Path Hover Popup</title>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="try.css">
+    <meta charset="UTF-8">
+    <title>SVG Path Hover Popup</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="try.css">
 </head>
 <body>
 
-  <!-- Fullscreen Background Video -->
-  <video class="bg-video" autoplay loop muted playsinline>
-    <source src="map-bg.mp4" type="video/mp4">
-  </video>
+    <!-- Fullscreen Background Video -->
+    <video class="bg-video" autoplay loop muted playsinline>
+        <source src="map-bg.mp4" type="video/mp4">
+    </video>
 
-  <!-- Sidebar Container -->
-  <div class="sidebar-container">
-    
-    <!-- Vertical Toolbar Buttons -->
-    <nav class="toolbar">
-      <button class="tool-btn" data-panel="panel-fire" title="Fire Risk Profile">
-        <i class="fa-solid fa-fire-flame-curved"></i>
-      </button>
-      <button class="tool-btn" data-panel="panel-causes" title="Main Causes">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-      <button class="tool-btn" data-panel="panel-incidents" title="Prominent Incidents">
-        <i class="fa-solid fa-bell"></i>
-      </button>
-      <button class="tool-btn" data-panel="panel-goals" title="Goals">
-        <i class="fa-solid fa-circle-info"></i>
-      </button>
-    </nav>
+    <!-- Sidebar Container -->
+    <div class="sidebar-container">
 
-    <!-- Sliding Info Drawer Box -->
-    <div class="side-panel" id="sidePanel">
-      <button class="close-btn" id="closeBtn">&times;</button>
-      
-      <div class="panel-inner">
-        <!-- Panel 1 Content -->
-        <div class="panel-content" id="panel-fire">
-          <h2><i class="fa-solid fa-fire-flame-curved"></i> Fire Risk Profile</h2>
-          <p>Information regarding regional fire risk assessments and statistics.</p>
+        <!-- Vertical Toolbar Buttons -->
+        <nav class="toolbar">
+            <button class="tool-btn" data-panel="panel-fire" title="Fire Risk Profile">
+                <i class="fa-solid fa-fire-flame-curved"></i>
+            </button>
+            <button class="tool-btn" data-panel="panel-causes" title="Main Causes">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="tool-btn" data-panel="panel-incidents" title="Prominent Incidents">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <button class="tool-btn" data-panel="panel-goals" title="Goals">
+                <i class="fa-solid fa-circle-info"></i>
+            </button>
+        </nav>
+
+        <!-- Sliding Info Drawer Box -->
+        <div class="side-panel" id="sidePanel">
+            <button class="close-btn" id="closeBtn">&times;</button>
+
+            <div class="panel-inner">
+                <!-- Panel 1 Content -->
+                <div class="panel-content" id="panel-fire">
+                    <h2><i class="fa-solid fa-fire-flame-curved"></i> Fire Risk Profile</h2>
+                    <p>Information regarding regional fire risk assessments and statistics.</p>
+                </div>
+
+                <!-- Panel 2 Content -->
+                <div class="panel-content" id="panel-causes">
+                    <h2><i class="fa-solid fa-magnifying-glass"></i> Main Causes</h2>
+                    <p>Breakdown of key causes leading to fire incidents in identified zones.</p>
+                </div>
+
+                <!-- Panel 3 Content -->
+                <div class="panel-content" id="panel-incidents">
+                    <h2><i class="fa-solid fa-bell"></i> Prominent Incidents</h2>
+                    <p>Recent alerts, high-level warnings, and notable historical incidents.</p>
+                </div>
+
+                <!-- Panel 4 Content -->
+                <div class="panel-content" id="panel-goals">
+                    <h2><i class="fa-solid fa-circle-info"></i> Goals</h2>
+                    <p>Prevention goals, response objectives, and safety initiatives.</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Panel 2 Content -->
-        <div class="panel-content" id="panel-causes">
-          <h2><i class="fa-solid fa-magnifying-glass"></i> Main Causes</h2>
-          <p>Breakdown of key causes leading to fire incidents in identified zones.</p>
-        </div>
-
-        <!-- Panel 3 Content -->
-        <div class="panel-content" id="panel-incidents">
-          <h2><i class="fa-solid fa-bell"></i> Prominent Incidents</h2>
-          <p>Recent alerts, high-level warnings, and notable historical incidents.</p>
-        </div>
-
-        <!-- Panel 4 Content -->
-        <div class="panel-content" id="panel-goals">
-          <h2><i class="fa-solid fa-circle-info"></i> Goals</h2>
-          <p>Prevention goals, response objectives, and safety initiatives.</p>
-        </div>
-      </div>
     </div>
-
-  </div>
 
   <!-- Shared parent container -->
   <div class="map-wrapper">
