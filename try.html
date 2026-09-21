@@ -4,27 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SVG Path Hover Popup & Fire Risk Dashboard</title>
-  
+
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="try.css">
 </head>
 <body>
 
-  <!-- Ambient Fallback Background -->
+  <!-- Ambient Background -->
   <div class="bg-fallback"></div>
-
-  <!-- Fullscreen Background Video -->
-  <video class="bg-video" autoplay loop muted playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%230b0f19'/></svg>">
+  <video class="bg-video" autoplay loop muted playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'></svg>">
     <source src="map-bg.mp4" type="video/mp4">
   </video>
 
   <!-- Sidebar Container -->
   <div class="sidebar-container">
-    
-    <!-- Vertical Toolbar Buttons -->
     <nav class="toolbar">
-      <button class="tool-btn" data-panel="panel-fire" title="Fire Risk Profile">
+      <button class="tool-btn active" data-panel="panel-fire" title="Fire Risk Profile">
         <i class="fa-solid fa-fire-flame-curved"></i>
       </button>
       <button class="tool-btn" data-panel="panel-causes" title="Main Causes">
@@ -38,48 +36,29 @@
       </button>
     </nav>
 
-    <!-- Sliding Info Drawer Box -->
-    <div class="side-panel" id="sidePanel">
+    <div class="side-panel open" id="sidePanel">
       <button class="close-btn" id="closeBtn" title="Close Panel">&times;</button>
-      
       <div class="panel-inner">
+
         <!-- Panel 1 Content -->
-        <div class="panel-content" id="panel-fire">
+        <div class="panel-content active" id="panel-fire">
           <h2><i class="fa-solid fa-fire-flame-curved"></i> Fire Risk Profile</h2>
           <p>Information regarding regional fire risk assessments, vegetation dryness indices, and live threat level maps.</p>
           <div class="panel-stats">
-            <div class="stat-item">
-              <span>Overall Threat Level:</span>
-              <span class="stat-value">High / Critical</span>
-            </div>
-            <div class="stat-item">
-              <span>Active Zones:</span>
-              <span class="stat-value">14 Sectors</span>
-            </div>
-            <div class="stat-item">
-              <span>Avg Humidity:</span>
-              <span class="stat-value">22%</span>
-            </div>
+            <div class="stat-item"><span>Overall Threat Level:</span><span class="stat-value">High / Critical</span></div>
+            <div class="stat-item"><span>Active Zones:</span><span class="stat-value">14 Sectors</span></div>
+            <div class="stat-item"><span>Avg Humidity:</span><span class="stat-value">22%</span></div>
           </div>
         </div>
 
         <!-- Panel 2 Content -->
         <div class="panel-content" id="panel-causes">
           <h2><i class="fa-solid fa-magnifying-glass"></i> Main Causes</h2>
-          <p>Breakdown of key causes leading to fire incidents in identified risk zones, including lightning strikes and agricultural burn-offs.</p>
+          <p>Breakdown of key causes leading to fire incidents in identified risk zones, including lightning strikes and agricultural burning.</p>
           <div class="panel-stats">
-            <div class="stat-item">
-              <span>Unattended Debris:</span>
-              <span class="stat-value">42%</span>
-            </div>
-            <div class="stat-item">
-              <span>Equipment Sparks:</span>
-              <span class="stat-value">28%</span>
-            </div>
-            <div class="stat-item">
-              <span>Lightning:</span>
-              <span class="stat-value">18%</span>
-            </div>
+            <div class="stat-item"><span>Unattended Debris:</span><span class="stat-value">42%</span></div>
+            <div class="stat-item"><span>Equipment Sparks:</span><span class="stat-value">28%</span></div>
+            <div class="stat-item"><span>Lightning:</span><span class="stat-value">18%</span></div>
           </div>
         </div>
 
@@ -88,14 +67,8 @@
           <h2><i class="fa-solid fa-bell"></i> Prominent Incidents</h2>
           <p>Recent alerts, high-level warnings, and notable historical fire incidents recorded across all monitored sectors.</p>
           <div class="panel-stats">
-            <div class="stat-item">
-              <span>Northern Sector:</span>
-              <span class="stat-value">Containment 85%</span>
-            </div>
-            <div class="stat-item">
-              <span>Eastern Ridge:</span>
-              <span class="stat-value">Alert Level 3</span>
-            </div>
+            <div class="stat-item"><span>Northern Sector:</span><span class="stat-value">Containment 85%</span></div>
+            <div class="stat-item"><span>Eastern Ridge:</span><span class="stat-value">Alert Level 3</span></div>
           </div>
         </div>
 
@@ -104,24 +77,18 @@
           <h2><i class="fa-solid fa-circle-info"></i> Goals</h2>
           <p>Prevention goals, rapid response objectives, and safety initiatives planned for the upcoming high-dryness season.</p>
           <div class="panel-stats">
-            <div class="stat-item">
-              <span>Target Response Time:</span>
-              <span class="stat-value">&lt; 12 Mins</span>
-            </div>
-            <div class="stat-item">
-              <span>Community Awareness:</span>
-              <span class="stat-value">94% Target</span>
-            </div>
+            <div class="stat-item"><span>Target Response Time:</span><span class="stat-value">&lt; 12 Mins</span></div>
+            <div class="stat-item"><span>Community Awareness:</span><span class="stat-value">94% Target</span></div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
   <!-- Shared parent container for SVG Map -->
   <div class="map-wrapper">
-    <!-- SVG Regional Map -->
-    <svg viewBox="0 0 1000 700" id="svgMap">
+    <svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet" id="svgMap">
       <g id="features">
   <path class="region" d="M713.9 833.9l-0.4-0.2-0.8-1-0.4-1.1-0.4-2.3-0.7-1.4-0.2-0.5-0.2-2-0.3-0.2-0.5-0.1-1-0.4-0.4-0.1-0.2-0.2-0.1-0.6 0.1-0.6 0.2-0.6 0.3-0.5 0.3-0.2 0.4-0.6 0.3-2.7 0.3-0.8 0.5-0.2 0.4 0.2 0.3 0.3 0.2 0.5 0.9 0.8 0.9 0.7 0.8 0.8 0.3 1.2-0.3 6.9 0.1 1.2 0.4 0.8 0.1 0.5-0.2 0.5-0.3 0.7-0.4 1.2z m-25.2 70.7l0.3-0.2 1.9-1 0.8-0.6 0.1 0 0.7-0.9 4.6-10.6 0.2-0.2 0.4 0 0.3-0.1 0-0.4-0.1-0.5-0.1-2.8 0.1-0.5 1.7-5.2 0-1 0.3-0.2 0.2-0.3 0.2-0.3 0.1-0.4 0.3-1.5 0-0.7-0.2-0.5-0.3-0.4-0.4-0.5-0.4-0.6 0-0.4 0-0.6-0.1-1.1 0-0.6 0.1-0.7 0.3-0.7 0-0.6-1.2-1.9-1.3-2.5-1-0.9-0.5-0.1-0.6 0-0.5 0.1-1 0.5-0.4-0.3-0.5-0.3-1.2 0.1-2.5-0.4-1.4 0.2-0.5-0.1-0.7-0.2-0.8-0.5-1.8-1.8-0.7-0.5-1.3-0.7-0.5-0.3 0-1.1 0-0.3-0.3-0.2-0.5-0.2-0.4-0.1-0.2-0.1-0.1-0.2 0-0.4 0.2-0.4 0.4-0.3 0.4-0.5 0.3-1.3 0.2-2.8 0.5-1.2 0.9-5.4-0.1-0.8-0.4-0.9-1.3-1.5-0.3-0.7-0.3-2.5 0.9-3.4 5.5-6 0-2.5 0.2-0.2 0.3-0.2 1.3-0.4 0.3-0.2 0.1 0 0.3-0.4-0.1-0.2-0.2-0.2-0.2-0.7-0.2-3.1-0.3-0.9-0.7-0.7-1.9-1.1-0.7-0.7-0.7-0.8 0.1-0.3 0.6-1.4 0.6-0.9 0.2-0.4 0.1-1-0.4-2.4-0.1-1.9-0.3-1.4 0-0.8 0.4-2.8 1.7-5.7 0.1-0.7-0.2-0.6-0.5-0.6 0.1-0.5 0.4 0 0.4-0.2 0.2-0.3 0.2-0.4 0.2-1.2 0.4-1 0.3-1-0.1-1.3 0.7 0.3 0.5-0.1 0.6-0.1 0.6 0 0.6 0.1 1.5 0.4 0.7 0.1 1.1-0.8 0.7-1.5 0.4-1.7 0.1-2.1 0-0.7-0.2-0.7-0.7-1.8-0.2-0.8-0.3-1.8-0.4-1.6-1.9-4.4 0-0.1 16.1 0.1 27.2 0.1 5.8 0 0.5 1.5 0.7 1.5 1.2 1.1 1.5 0.7 1.1 0.4-0.1 0.7 0.5 1.5 0.8 1.4 1 0.9 1.6 1 0.2 0.3 0.2 0.6 1.3 1.8 1.3 0.8 2.7 0.3 1.2 0.4-0.4 1.2-0.2 1.2-0.2 2.6 0.3 1.3 1 2.7 0.4 2.5 0.4 1.2 0 1.1-0.6 1.1-0.6 0.4-0.6 0.2-0.4 0.4-0.2 0.8 0.2 0.2 1.2 0.9-0.4 1.3-0.1 2.5-0.6 1 0.5 0.3 1.7 1 0.4 0-0.3 1.1-1.3 1.6-0.2 1-0.2 0.4-0.4 0.2-0.5 0.1-0.4 0.2-0.3 0.5-1.1 2.9-0.3 0.6-1.8 1.6-0.8 1.2-0.4 1.5-0.1 1.9-0.8 1.1-1.8 0.2-2.1-0.4-1.6-0.7-1.3 1.2-0.8 1.6-0.3 1.6-0.1 1.4 0.3 0.6 1.4 1.2 0.5 0.5 0.2 0.9 0.1 1.1-0.1 1-0.4 0.4-1.6-0.6-1-1.5-1.2-3.5-1.4-1.5-1.6-0.8-1.1 0.4 0 2.3-0.3 0-0.2-0.3-0.6-0.8-0.2 1.1 0.6 1.2 0.7 1.1 0.8 1.9 1 0.9 1 0.7 0.6 0.5 0.1 1.2-0.7 2.2-0.8 4.7-0.1 8-0.9 4.2-0.2 4.9-0.4 0.9-0.7-0.2-0.2-0.8-0.3-2.7-0.1-0.6-1.8-1.3-0.2-0.5-0.1-0.6 0.1-0.7 0-0.6-1.3-2.5-0.7-0.9-0.3-1.1-0.7-6.7 0.1-1.3 0.7-3.4-0.1-1.1-0.5-2-0.2-1.1 0-1.5-0.2-0.6-0.6-0.3-1.4-0.4-1-0.6-2.1-2.9-0.3-1 0.4-2.5 0.1-1.1-0.6-1.2-1.1-1.1-2.2-2-0.6-0.9-0.3-0.8-0.3-2.2-2.2-5.2 0-2.2 0.1-1.2 0-1.1-0.4-0.7-0.8-0.2-0.3-0.1-0.9 0.2-3.3 2.4-3.1 1.8-0.6 0.5-0.5 0.4-0.6 1.1-0.1 1.2 0.2 3.5 0 1.1-0.2 0.5-0.5 0.7-0.1 0.5-0.2 0.5-2 1.9-1.5 0.8-1.8 0.4-1.7 0.9-1.2 1.9-0.1 2.4-0.2 1.2-0.6 0.5-2.4 2.9-1.2 2.1-0.8 2.3-0.4 2.5-0.2 2.6 0.2 0.9 0.7 2.1 0.2 1.1 0.4 0.5 0.9 0.4 0.7-0.4-0.1-1.5 1.7 1.2 2.3 3 1.4 1.4 1.1-0.6 1 0.4 0.9 0.9 0.4 1 0 2.1 0.2 0.8 1.6 3.3 0.6 0.8 0.2 0.4 0 0.6-0.1 1.2 0.1 0.6 0.2 0.4 0.5 0.7 2.6 7 0.2 0.9 0 1.2-0.2 1.1-0.6 1-0.2 0.6 0.4 1.1-0.2 0.5-0.2 0.5-0.4 1.6-0.9 2.2-3.9 4.8-5.2 7.3-3.3 5.9-0.8 1-1 0.9-0.8 0.4-0.9 0.1-2.6-0.2-0.8-0.2-0.1-0.2z m6 11.6l-0.3 0-0.7-0.2-1 0.1-0.9 0.2-0.7-0.3-0.4-0.5-0.5-0.3 0-0.3 0.4-0.4 0.9-1.2 1-0.5 1.5 0 0.7 0.3 0.2 0.3 0.2 0.7-0.1 1.6-0.3 0.5z" id="davao" name="Davao">
   </path>
@@ -157,14 +124,15 @@
   </path>
   <path class="region" d="M686.6 796.9l-0.1 0.5 0.5 0.6 0.2 0.6-0.1 0.7-1.7 5.7-0.4 2.8 0 0.8 0.3 1.4 0.1 1.9 0.4 2.4-0.1 1-0.2 0.4-0.6 0.9-0.6 1.4-0.1 0.3 0.7 0.8 0.7 0.7 1.9 1.1 0.7 0.7 0.3 0.9 0.2 3.1 0.2 0.7 0.2 0.2 0.1 0.2-0.3 0.4-0.1 0-0.3 0.2-1.3 0.4-0.3 0.2-0.2 0.2 0 2.5-5.5 6-0.9 3.4 0.3 2.5 0.3 0.7 1.3 1.5 0.4 0.9 0.1 0.8-0.9 5.4-0.5 1.2-0.2 2.8-0.3 1.3-0.4 0.5-0.4 0.3-0.2 0.4 0 0.4 0.1 0.2 0.2 0.1 0.4 0.1 0.5 0.2 0.3 0.2 0 0.3 0 1.1 0.5 0.3 1.3 0.7 0.7 0.5 1.8 1.8 0.8 0.5 0.7 0.2 0.5 0.1 1.4-0.2 2.5 0.4 1.2-0.1 0.5 0.3 0.4 0.3 1-0.5 0.5-0.1 0.6 0 0.5 0.1 1 0.9 1.3 2.5 1.2 1.9 0 0.6-0.3 0.7-0.1 0.7 0 0.6 0.1 1.1 0 0.6 0 0.4 0.4 0.6 0.4 0.5 0.3 0.4 0.2 0.5 0 0.7-0.3 1.5-0.1 0.4-0.2 0.3-0.2 0.3-0.3 0.2 0 1-1.7 5.2-0.1 0.5 0.1 2.8 0.1 0.5 0 0.4-0.3 0.1-0.4 0-0.2 0.2-4.6 10.6-0.7 0.9-0.1 0-0.8 0.6-1.9 1-0.3 0.2-0.2-0.5-0.1-4.2-0.3-1.1-0.4-0.8-0.5-0.6-0.7-0.3-1.2-0.1-0.3-0.2-0.3-0.4-0.2-0.6-0.1-0.5-0.3-0.6-0.5-0.3-0.6-0.1-0.4-0.2-0.6-1.1 0.2-0.8 0.5-0.8 0.2-0.9 0.2-0.8 0.4-0.9 0.9-1.4 2-2.5 0.8-1.6 0.1-2.2-0.2-0.9-0.7-1.9-0.2-0.7-0.5-0.5-0.5 0-0.6-0.1-2 0-0.7-0.6-0.6-0.3-0.5 0.2-0.2 0.5 0.1 1.4-0.1 0.5-0.5 0.8-1.8 5.2-1.3 3.7-1 1.2-1 0-2.6-0.5-2.1 0.7-1.3-0.3-5.4-2.6-1.4-0.4-2.4-1-0.6 0-0.7 0.1-0.5-0.1-1.4-0.5-3.4-2-0.4 0.3-1.6-0.7-0.6-0.4-0.2-0.3-0.1-0.5-0.2-0.5-0.4-0.2-0.9-0.2-7.5-4.3-2.8-1.2-6.6-2.9-1-0.6-1.4-1.3-0.7-1-0.7-2-0.6-0.9-3.6-3.8-1.4-2-0.9-1.9-0.6-2.8-0.1-1.1-0.4-1.2-0.1-0.6 0.3-0.3 0.8 0 0.2-0.3-0.1-0.3 0-4.7-0.1-1.2-1-3.4 0.2-1.5 0.1 0 9.8-0.1 1.3 0.2 0.3 0.5-0.2 0.5 0 0.5 1 0.1 11 0.1 2.5-0.4 2.1-1.1 1-2.1-0.1-0.5-0.4-1.5 0.6-0.6 1.2-0.4 2.2-0.7-0.2 0.9 3.9-0.1-0.9 3.7 1.4 0.3 1.1 1.5 1 1.9 1 1.5 1.6 1.3 1.5 0.8 1.7 0.3 2.2-0.1-1.2-1.4-0.5-1 0.1-1.1 0.9-1.4-2.7-1.6-0.4-0.5-0.3-11.2-2 0.1-0.5-0.4-0.3-1 0-0.8 0.1-0.9 0.3-0.9 0.3-0.4 0.3-1-1-2.2-2-3.3-0.1-0.1-0.2-0.3-0.8-1-1.3 1.4-0.3 0.6 0.3 1 0.6 0.6 0.7 0.6 0 0.3-0.5 0.4-1.5 0.8-1 0.9 0.9 1.2 0.7 0.4 0.6 0.8 0.3 0.8-0.2 0.8 0.3 0.3 0.3 0.2-0.7 0.5-0.8 1.5-0.6 0.4 0 0.1-0.8 0-0.7-0.3-0.7-0.5-0.7-0.3-1.7-0.3-0.7-0.3-0.9-0.6-0.2-0.4-0.1-0.3 0-0.4 0-1.1-0.3 0-1.1-0.9-0.9-0.2-1-0.1-0.7-0.3-0.7-0.4-0.7-0.7-0.6-0.9 0-0.4 1.9-4.5 0.5-1.3-0.1-0.8-0.7-0.4-1.4-0.2-0.9 0.2-0.7 0.6-1.1 1.6-0.7 0.8-0.4 0.3-0.2 0.1-0.6 0.2-1 0.1-0.4-0.2-0.8-0.3 0.4-1.3 8.6-12.6 0-0.9-0.5-1.1-1.5-1.9-0.4-1.9 0.9-7 2.2-1.1 0.9 0 1 0.6 0.3 0.5 0.6 1 0.5 0.6 0.8 0.5 0.5 0.3 0.6 0.2 0.9 0 1.5 0 2.7-0.4 1.5 0 3.4 0.9 1 0.1 0.2 0.5 0.2 1.1 0.1 0.5 0.5 0.7 0.5 0.4 0.5 0.3 0.6 0.6 0.3 0.6 0.2 0.7 0.4 1.3 0.1 2.1 0.1 0.6 0.3 0.5 0.4 0.6 0.5 0.4 0.5-0.5 0.4-0.4 0.1 0 0.4-0.1 0.4 0.1 1.1 0.4 0.7 0.8 0.9 0.6 0.6 0.1 0.3-0.2 0.1 0 0.2-0.4 0.3-0.3 1.2-0.3 0.1-0.2 0.7-0.2 0.6-0.2 0-0.1 0.4-0.6 0.2-1.4 0.2-0.5 0.7-0.4 1.8-0.7 0.9-0.4 1.1-0.8 2.3-2.8 0.1 0.1 0.4-0.2 0.4-0.2 0.1 0 0.1-0.1 0.1-0.3 0.1-0.2 0.2-0.1 0.4 0 1.1 0.3 0.5 0z" id="soccsksargen" name="Soccsksargen">
   </path>
- </g>
+</g>
     </svg>
-    <div class="map-tooltip" id="mapTooltip">Sector Name</div>
+    <div class="map-tooltip" id="mapTooltip">Region Name</div>
   </div>
 
   <!-- Fire Cursor Canvas Layer -->
   <canvas id="fireCanvas"></canvas>
 
+  <!-- External JavaScript -->
   <script src="try.js"></script>
 </body>
 </html>
